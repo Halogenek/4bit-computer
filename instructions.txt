@@ -23,6 +23,5 @@
 
 0x3X - write 4 bits of data to ROM register
 
-//TODO
 0x4X
-0xXX - jump to a 12 bit ROM address, MSB first LSB last
+0xXX - direct jump to a 12 bit ROM address, MSB first LSB last
