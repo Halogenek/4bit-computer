@@ -1,5 +1,11 @@
-0x3X - write 4 bits of data to ROM register
 0x00 - NOP
+
+0x1X - toggle
+   0 - ROM data bus connection
+   1 - ALU result bus connection
+   2 - RAM write/read
+   3 - select RAM
+
 0x2X - write to...
    0 - program counter
    1 - program address register A
@@ -10,8 +16,13 @@
    6 - ALU operation register
    7 - ALU result register
    8 - RAM address register
-0x1X - toggle
-   0 - ROM data bus connection
-   1 - ALU result bus connection
-   2 - RAM write/read
-   3 - select RAM
+   9 - program counter if zero flag
+   A - program counter if no zero flag
+   B - program counter if carry flag
+   C - program counter if no zero flag
+
+0x3X - write 4 bits of data to ROM register
+
+//TODO
+0x4X
+0xXX - jump to a 12 bit ROM address, MSB first LSB last
