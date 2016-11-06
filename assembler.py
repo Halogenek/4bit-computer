@@ -104,11 +104,11 @@ with open(sys.argv[1]) as asm_fp:
                 continue
             else:
                 sys.exit('unknown WRI argument')
-        if 'WRIDAT ' in line:
+        elif 'WRIDAT ' in line:
             temp_str = line.split()
             machine_code_fp.write('3'+temp_str[1]+'\r\n')
             continue
-        if 'DJMP ' in line:
+        elif 'DJMP ' in line:
             temp_str = line.split()
             temp_str1 = list(temp_str[1])
             machine_code_fp.write('4'+temp_str1[0]+'\r\n')
