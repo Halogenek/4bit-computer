@@ -108,5 +108,10 @@ with open(sys.argv[1]) as asm_fp:
             temp_str = line.split()
             machine_code_fp.write('3'+temp_str[1]+'\r\n')
             continue
-
+        if 'DJMP ' in line:
+            temp_str = line.split()
+            temp_str1 = list(temp_str[1])
+            machine_code_fp.write('4'+temp_str1[0]+'\r\n')
+            machine_code_fp.write(temp_str1[1]+temp_str1[2]+'\r\n')
+            continue
 #TODO calculate jump addresses and write them in the machine code file
