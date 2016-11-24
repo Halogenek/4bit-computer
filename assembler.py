@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #This is an simple assembler for the asm code for the 4 bit processor
-#
+###############################################
 #The instructions are:
 #NOP    0x00 - do nothing
 #
@@ -31,6 +31,15 @@
 #DJMP XXX    0x4X
 #            0xXX - direct jump to a 12 bit ROM address, MSB first LSB last
 ###############################################
+#Line starting with '#' will be ignored
+#Every word that's not an instruction fron the list abowe will be ignored
+#
+#You can put labels in code with '&LABEL'
+#Then you can direct jump to those labels example:
+#&LABEL
+#DJMP &LABEL
+###############################################
+
 import sys
 if len(sys.argv) < 3:
     print('no path to input or output file')
@@ -42,76 +51,111 @@ elif len(sys.argv) > 3:
     sys.exit(1)
 machine_code_fp = open(sys.argv[2], 'w')
 machine_code_fp.write('v2.0 raw\r\n')
+labels = {}
+machine_code_line = 0
 with open(sys.argv[1]) as asm_fp:
     for line in asm_fp:
-        if 'NOP' in line:
-            machine_code_fp.write('00\r\n')
+        if line[0] == '#':
             continue
-        elif 'TOG ' in line:
-            if 'ROM' in line:
-                machine_code_fp.write('10\r\n')
+        elif line[0] == '&':
+            labels[line.partition('&')[2].partition(' ')[0]] \
+                = machine_code_fp.tell() - 1
+        else:
+            if 'NOP' in line:
+                machine_code_fp.write('00\r\n')
+                machine_code_line += 1
                 continue
-            elif 'ALURES' in line:
-                machine_code_fp.write('11\r\n')
+            elif 'TOG ' in line:
+                if 'ROM' in line:
+                    machine_code_fp.write('10\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'ALURES' in line:
+                    machine_code_fp.write('11\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'RAMWR' in line:
+                    machine_code_fp.write('12\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'RSEL' in line:
+                    machine_code_fp.write('13\r\n')
+                    machine_code_line += 1
+                    continue
+                else:
+                    sys.exit('unknown TOG argument in line ' \
+                        + str(asm_fp.tell()) + ': ' + line)
+            elif 'WRI ' in line:
+                if 'PCOU' in line:
+                    machine_code_fp.write('20\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PARA' in line:
+                    machine_code_fp.write('21\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PARB' in line:
+                    machine_code_fp.write('22\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PARC' in line:
+                    machine_code_fp.write('23\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'ALUAR' in line:
+                    machine_code_fp.write('24\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'ALUBR' in line:
+                    machine_code_fp.write('25\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'ALUOR' in line:
+                    machine_code_fp.write('26\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'ALURR' in line:
+                    machine_code_fp.write('27\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'RARADDR' in line:
+                    machine_code_fp.write('28\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PCOUZ' in line:
+                    machine_code_fp.write('29\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PCOUNZ' in line:
+                    machine_code_fp.write('2a\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PCOUC' in line:
+                    machine_code_fp.write('2b\r\n')
+                    machine_code_line += 1
+                    continue
+                elif 'PCOUNZ' in line:
+                    machine_code_fp.write('2c\r\n')
+                    machine_code_line += 1
+                    continue
+                else:
+                    sys.exit('unknown WRI argument in line ' \
+                        + str(asm_fp.tell()) + ': ' + line)
+            elif 'WRIDAT ' in line:
+                temp_str = line.split()
+                machine_code_fp.write('3'+temp_str[1]+'\r\n')
+                machine_code_line += 1
                 continue
-            elif 'RAMWR' in line:
-                machine_code_fp.write('12\r\n')
-                continue
-            elif 'RSEL' in line:
-                machine_code_fp.write('13\r\n')
-                continue
-            else:
-                sys.exit('unknown TOG argument')
-        elif 'WRI ' in line:
-            if 'PCOU' in line:
-                machine_code_fp.write('20\r\n')
-                continue
-            elif 'PARA' in line:
-                machine_code_fp.write('21\r\n')
-                continue
-            elif 'PARB' in line:
-                machine_code_fp.write('22\r\n')
-                continue
-            elif 'PARC' in line:
-                machine_code_fp.write('23\r\n')
-                continue
-            elif 'ALUAR' in line:
-                machine_code_fp.write('24\r\n')
-                continue
-            elif 'ALUBR' in line:
-                machine_code_fp.write('25\r\n')
-                continue
-            elif 'ALUOR' in line:
-                machine_code_fp.write('26\r\n')
-                continue
-            elif 'ALURR' in line:
-                machine_code_fp.write('27\r\n')
-                continue
-            elif 'RARADDR' in line:
-                machine_code_fp.write('28\r\n')
-                continue
-            elif 'PCOUZ' in line:
-                machine_code_fp.write('29\r\n')
-                continue
-            elif 'PCOUNZ' in line:
-                machine_code_fp.write('2a\r\n')
-                continue
-            elif 'PCOUC' in line:
-                machine_code_fp.write('2b\r\n')
-                continue
-            elif 'PCOUNZ' in line:
-                machine_code_fp.write('2c\r\n')
-                continue
-            else:
-                sys.exit('unknown WRI argument')
-        elif 'WRIDAT ' in line:
-            temp_str = line.split()
-            machine_code_fp.write('3'+temp_str[1]+'\r\n')
-            continue
-        elif 'DJMP ' in line:
-            temp_str = line.split()
-            temp_str1 = list(temp_str[1])
-            machine_code_fp.write('4'+temp_str1[0]+'\r\n')
-            machine_code_fp.write(temp_str1[1]+temp_str1[2]+'\r\n')
-            continue
+            elif 'DJMP ' in line:
+                if '&' in line:
+                    machine_code_fp.write('4' + line.slit()[1])
+                    machine_code_line += 2
+                    continue
+                else:
+                    temp_str = line.split()
+                    temp_str1 = list(temp_str[1])
+                    machine_code_fp.write('4'+temp_str1[0]+'\r\n')
+                    machine_code_fp.write(temp_str1[1]+temp_str1[2]+'\r\n')
+                    machine_code_line += 2
+                    continue
 #TODO calculate jump addresses and write them in the machine code file
