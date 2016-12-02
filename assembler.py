@@ -3,7 +3,7 @@
 #This is an simple assembler for the asm code for the 4 bit processor
 ###############################################
 #The instructions are:
-#NOP    0x00 - do nothing
+#NOP        0x00 - do nothing
 #
 #TOG        0x1X - toggle
 #    ROM       0 - ROM data bus connection
@@ -30,6 +30,10 @@
 #
 #DJMP XXX    0x4X
 #            0xXX - direct jump to a 12 bit ROM address, MSB first LSB last
+#DJMPZF XXX  0x5X
+#            0xXX - direct jump on zero flag set
+#DJMPCF XXX  0x6X
+#            0xXX - direct jump on carry flag
 ###############################################
 #Line starting with '#' will be ignored
 #Every word that's not an instruction fron the list abowe will be ignored
