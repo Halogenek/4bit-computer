@@ -19,8 +19,15 @@
 #    ALUAR     4 - ALU A register
 #    ALUBR     5 - ALU B register
 #    ALUOR     6 - ALU operation register
+#                  ALU operations:
+#                  0 - logic AND
+#                  1 - logic OR
+#                  2 - logic NOR
+#                  3 - logic XOR
+#                  4 - add
+#                  F - sub
 #    ALURR     7 - ALU result register
-#    RARADDR   8 - RAM address register
+#    RAMADDR   8 - RAM address register
 #    PCOUZ     9 - program counter if zero flag
 #    PCOUNZ    A - program counter if no zero flag
 #    PCOUC     B - program counter if carry flag
@@ -65,7 +72,7 @@ for line in lines_list:
     if line[0] == '#':
         continue
     elif line[0] == '&':
-        labels[line.split()[0]] = len(machine_code) + 1
+        labels[line.split()[0]] = len(machine_code) - 1
     else:
         if 'NOP' in line:
             machine_code.append('00')
@@ -111,7 +118,7 @@ for line in lines_list:
             elif 'ALURR' in line:
                 machine_code.append('27')
                 continue
-            elif 'RARADDR' in line:
+            elif 'RAMADDR' in line:
                 machine_code.append('28')
                 continue
             elif 'PCOUZ' in line:
@@ -130,7 +137,7 @@ for line in lines_list:
                 sys.exit('unknown WRI argument in line ' \
                     + lines_list.index(line) + ': ' + line)
         elif 'WRIDAT ' in line:
-            machine_code.append('3' + line.split() + '')
+            machine_code.append('3' + line.split()[1] + '')
             continue
         elif 'DJMP ' in line:
             if '&' in line:
@@ -139,6 +146,26 @@ for line in lines_list:
                 continue
             else:
                 machine_code.append('4' + list(line.split()[1])[0])
+                machine_code.append(list(line.split()[1])[1] + \
+                    list(line.split()[1])[2])
+                continue
+        elif 'DJMPZF ' in line:
+            if '&' in line:
+                machine_code.append('5' + ' ' + line.split()[1])
+                machine_code.append('place_holder')
+                continue
+            else:
+                machine_code.append('5' + list(line.split()[1])[0])
+                machine_code.append(list(line.split()[1])[1] + \
+                    list(line.split()[1])[2])
+                continue
+        elif 'DJMPCF ' in line:
+            if '&' in line:
+                machine_code.append('6' + ' ' + line.split()[1])
+                machine_code.append('place_holder')
+                continue
+            else:
+                machine_code.append('6' + list(line.split()[1])[0])
                 machine_code.append(list(line.split()[1])[1] + \
                     list(line.split()[1])[2])
                 continue
