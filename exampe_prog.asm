@@ -153,8 +153,6 @@ WRI RAMADDR        write data (d) from bus to ram address register
 TOG ROM            disconnect rom register from data bus (off)
 TOG RAMWR          toggle write/read on ram (read)
 TOG RSEL           select ram (read from ram)
-WRI RAMADDR        write data from bus to ram address register
-TOG RSEL           select ram (read from ram)
 WRI ALUAR          write to alu a register
 TOG RAMWR          toggle write/read on ram (write)
 WRI ALURR          write result to alu res register
